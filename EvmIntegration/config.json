@@ -1,0 +1,11 @@
+{
+  "type": "rig",
+  "version": 1,
+  "name": "EvmIntegration",
+  "git_url": "git@github.com:Cygnus-Wealth/evm-integration.git",
+  "default_branch": "main",
+  "created_at": "2026-02-13T13:46:28.505385873-07:00",
+  "beads": {
+    "prefix": "ev"
+  }
+}

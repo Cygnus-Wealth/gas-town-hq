@@ -1,0 +1,11 @@
+{
+  "type": "rig",
+  "version": 1,
+  "name": "CygnusWealthApp",
+  "git_url": "git@github.com:Cygnus-Wealth/cygnus-wealth-app.git",
+  "default_branch": "main",
+  "created_at": "2026-02-13T13:46:11.573790873-07:00",
+  "beads": {
+    "prefix": "cy"
+  }
+}
