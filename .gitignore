@@ -8,6 +8,7 @@
 **/state.json
 **/*.lock
 **/registry.json
+daemon/activity.json
 
 # =============================================================================
 # Rig git worktrees (recreate with 'gt sling' or 'gt rig add')
