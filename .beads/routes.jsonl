@@ -1,2 +1,11 @@
 {"prefix":"hq-","path":"."}
 {"prefix":"hq-cv-","path":"."}
+{"prefix":"as-","path":"AssetValuator"}
+{"prefix":"cy-","path":"CygnusWealthApp"}
+{"prefix":"da-","path":"DataModels"}
+{"prefix":"en-","path":"EnterpriseArch"}
+{"prefix":"ev-","path":"EvmIntegration"}
+{"prefix":"po-","path":"PortfolioAggregation"}
+{"prefix":"ro-","path":"RobinhoodIntegration"}
+{"prefix":"so-","path":"SolIntegration"}
+{"prefix":"wa-","path":"WalletIntegrationSystem"}

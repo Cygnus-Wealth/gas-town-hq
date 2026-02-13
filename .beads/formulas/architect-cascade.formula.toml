@@ -1,0 +1,45 @@
+description = "DDD architect hierarchy cascade. Work flows down through Enterprise → Domain → System → Unit architects, with each layer reviewing and signing off on the layer below before proceeding."
+formula = "architect-cascade"
+type = "expansion"
+version = 1
+
+[[template]]
+description = "Enterprise Architect defines strategic direction: domain decomposition, bounded context boundaries, cross-domain communication patterns, and enterprise-wide standards for {{feature}}. Focus on business alignment and architectural integrity."
+id = "{target}.enterprise"
+title = "Enterprise Architecture: {{feature}}"
+
+[[template]]
+description = "Domain Architect translates enterprise guidance into domain-specific implementation: bounded context internals, aggregate design, domain events, and inter-system contracts for {{feature}}. Must align with enterprise directives."
+id = "{target}.domain"
+needs = ["{target}.enterprise"]
+title = "Domain Architecture: {{feature}}"
+
+[[template]]
+description = "Enterprise Architect reviews Domain Architect's work. Verify: Does it respect bounded context boundaries? Are cross-domain contracts sound? Does it maintain enterprise principles (client-side sovereignty, read-only, privacy-first)? Sign off or send back with guidance."
+id = "{target}.enterprise-reviews-domain"
+needs = ["{target}.domain"]
+title = "Enterprise Review: Domain Architecture"
+
+[[template]]
+description = "System Architect designs internal system structure: module decomposition, library selection, API design, E2E test planning, and resilience patterns for {{feature}}. Must align with domain architect's contracts and boundaries."
+id = "{target}.system"
+needs = ["{target}.enterprise-reviews-domain"]
+title = "System Architecture: {{feature}}"
+
+[[template]]
+description = "Domain Architect reviews System Architect's work. Verify: Does the system design honor domain boundaries? Are aggregate roots and repositories correct? Do the chosen libraries and patterns serve domain goals? Sign off or send back with guidance."
+id = "{target}.domain-reviews-system"
+needs = ["{target}.system"]
+title = "Domain Review: System Architecture"
+
+[[template]]
+description = "Unit Architect designs granular code-level architecture: file structure, class/method design, interface definitions, unit test specifications, and implementation details for {{feature}}. Must align with system architect's module structure."
+id = "{target}.unit"
+needs = ["{target}.domain-reviews-system"]
+title = "Unit Architecture: {{feature}}"
+
+[[template]]
+description = "System Architect reviews Unit Architect's work. Verify: Does the code structure fit the module design? Are interfaces clean and testable? Do unit test specs cover critical paths? Is the implementation plan realistic? Sign off or send back with guidance."
+id = "{target}.system-reviews-unit"
+needs = ["{target}.unit"]
+title = "System Review: Unit Architecture"

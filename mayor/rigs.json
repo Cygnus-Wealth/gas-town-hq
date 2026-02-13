@@ -1,4 +1,77 @@
 {
   "version": 1,
-  "rigs": {}
+  "rigs": {
+    "AssetValuator": {
+      "git_url": "git@github.com:Cygnus-Wealth/asset-valuator.git",
+      "added_at": "2026-02-13T13:46:11.445929655-07:00",
+      "beads": {
+        "repo": "",
+        "prefix": "as"
+      }
+    },
+    "CygnusWealthApp": {
+      "git_url": "git@github.com:Cygnus-Wealth/cygnus-wealth-app.git",
+      "added_at": "2026-02-13T13:46:17.503552285-07:00",
+      "beads": {
+        "repo": "",
+        "prefix": "cy"
+      }
+    },
+    "DataModels": {
+      "git_url": "git@github.com:Cygnus-Wealth/data-models.git",
+      "added_at": "2026-02-13T13:46:22.912585876-07:00",
+      "beads": {
+        "repo": "",
+        "prefix": "da"
+      }
+    },
+    "EnterpriseArch": {
+      "git_url": "git@github.com:Cygnus-Wealth/enterprise-arch.git",
+      "added_at": "2026-02-13T13:46:28.297963066-07:00",
+      "beads": {
+        "repo": "",
+        "prefix": "en"
+      }
+    },
+    "EvmIntegration": {
+      "git_url": "git@github.com:Cygnus-Wealth/evm-integration.git",
+      "added_at": "2026-02-13T13:46:33.624922813-07:00",
+      "beads": {
+        "repo": "",
+        "prefix": "ev"
+      }
+    },
+    "PortfolioAggregation": {
+      "git_url": "git@github.com:Cygnus-Wealth/portfolio-aggregation.git",
+      "added_at": "2026-02-13T13:46:38.869591176-07:00",
+      "beads": {
+        "repo": "",
+        "prefix": "po"
+      }
+    },
+    "RobinhoodIntegration": {
+      "git_url": "git@github.com:Cygnus-Wealth/robinhood-integration.git",
+      "added_at": "2026-02-13T13:46:43.793236851-07:00",
+      "beads": {
+        "repo": "",
+        "prefix": "ro"
+      }
+    },
+    "SolIntegration": {
+      "git_url": "git@github.com:Cygnus-Wealth/sol-integration.git",
+      "added_at": "2026-02-13T13:46:48.857013253-07:00",
+      "beads": {
+        "repo": "",
+        "prefix": "so"
+      }
+    },
+    "WalletIntegrationSystem": {
+      "git_url": "git@github.com:Cygnus-Wealth/wallet-integration-system.git",
+      "added_at": "2026-02-13T13:46:54.01959508-07:00",
+      "beads": {
+        "repo": "",
+        "prefix": "wa"
+      }
+    }
+  }
 }

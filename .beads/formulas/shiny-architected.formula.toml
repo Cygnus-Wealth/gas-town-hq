@@ -1,0 +1,34 @@
+description = "Full architect-driven engineering workflow. Design flows through the DDD architect hierarchy (Enterprise → Domain → System → Unit) with review gates at each level. Implementation by a dedicated Developer agent, code review by a Code Reviewer agent, then test and submit."
+extends = ["shiny"]
+formula = "shiny-architected"
+type = "workflow"
+version = 1
+
+# Override implement step with developer agent role
+[[steps]]
+description = "Developer agent implements {{feature}} from the unit architect's spec. Translate the design into production code. Follow the file structure, class designs, and interface definitions exactly as specified. Write clean, tested code — no gold-plating, no deviating from the architecture."
+id = "implement"
+needs = ["design"]
+title = "Developer: Implement {{feature}}"
+
+# Override review step with code reviewer agent role
+[[steps]]
+description = "Code Reviewer agent reviews the implementation against the full architect chain. Check: Does the code match the unit architect's spec? Does it honor system architect's module boundaries? Are domain contracts respected? Look for bugs, security issues, missing error handling, and test gaps. Approve, or send back to developer with specific issues."
+id = "review"
+needs = ["implement"]
+title = "Code Review: {{feature}}"
+
+# Developer addresses review feedback and runs tests
+[[steps]]
+description = "Developer agent addresses any issues from code review, then writes and runs tests. Unit tests for new code, integration tests if needed. Run the full test suite, fix any regressions. All tests must pass before proceeding."
+id = "test"
+needs = ["review"]
+title = "Developer: Test {{feature}}"
+
+# Submit remains as-is from shiny
+
+[compose]
+
+[[compose.expand]]
+target = "design"
+with = "architect-cascade"
