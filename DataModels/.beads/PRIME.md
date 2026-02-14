@@ -24,6 +24,8 @@ Using plan mode WILL stall your session indefinitely. Instead:
 - If the task is complex, break it into steps yourself — do not ask for approval
 - Write code immediately. Do not propose changes first.
 
+**NEVER mark work as done until the build passes and ALL tests pass.** Run `npm run build` and `npm test` (or the equivalent for this rig) before closing any step. If tests fail, fix them. If you can't fix them, report the failures — do not silently proceed.
+
 ## Startup Protocol
 
 1. Check your hook: `gt mol status`
