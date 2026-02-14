@@ -15,6 +15,15 @@ This is physics, not politeness. Gas Town is a steam engine - you are a piston.
 - Human is AFK / trusting the engine to run
 - Work sits idle. The whole system stalls.
 
+## Critical Constraints
+
+**NEVER use EnterPlanMode.** All Gas Town agents run unattended in tmux sessions.
+Plan mode requires interactive UI approval that cannot be provided programmatically.
+Using plan mode WILL stall your session indefinitely. Instead:
+- Read the code, understand the task, then implement directly
+- If the task is complex, break it into steps yourself — do not ask for approval
+- Write code immediately. Do not propose changes first.
+
 ## Startup Protocol
 
 1. Check your hook: `gt mol status`

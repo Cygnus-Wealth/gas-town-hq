@@ -1,8 +1,8 @@
-description = "Full architect-driven engineering workflow. Design flows through the DDD architect hierarchy (Enterprise → Domain → System → Unit) with review gates at each level. Implementation by a dedicated Developer agent, code review by a Code Reviewer agent, then test and submit."
+description = "Full architect-driven engineering workflow. Design flows through the DDD architect hierarchy (Enterprise → Domain → System → Unit) with review loops at each level. Implementation by a Developer agent, code review with a mandatory approval gate, then test and submit. No work proceeds without reviewer agreement."
 extends = ["shiny"]
 formula = "shiny-architected"
 type = "workflow"
-version = 1
+version = 2
 
 # Override implement step with developer agent role
 [[steps]]
@@ -11,16 +11,35 @@ id = "implement"
 needs = ["design"]
 title = "Developer: Implement {{feature}}"
 
-# Override review step with code reviewer agent role
+# Code review with mandatory approval gate
 [[steps]]
-description = "Code Reviewer agent reviews the implementation against the full architect chain. Check: Does the code match the unit architect's spec? Does it honor system architect's module boundaries? Are domain contracts respected? Look for bugs, security issues, missing error handling, and test gaps. Approve, or send back to developer with specific issues."
+description = """Code Reviewer agent reviews the implementation of {{feature}}.
+
+**This is a review loop with mandatory approval.**
+
+1. Review the diff against the full architect chain:
+   - Does the code match the unit architect's spec?
+   - Does it honor system architect's module boundaries?
+   - Are domain contracts respected?
+2. Check for: bugs, security issues, missing error handling, test gaps
+3. If issues found:
+   - `bd update {this} --append-notes "CHANGES_REQUESTED: <specific issues with file:line references>"`
+   - Mail the Developer with actionable feedback
+   - Wait for the Developer to address issues and signal readiness
+   - Re-review the changes. Repeat until satisfied.
+4. When fully satisfied:
+   - `bd update {this} --append-notes "APPROVED: <confirmation that all issues resolved>"`
+   - `bd close {this} --reason approved`
+
+**Do NOT approve code you have concerns about.** Every issue must be explicitly resolved — either fixed or convincingly justified by the Developer. Silence is not agreement."""
+gate = { type = "human" }
 id = "review"
 needs = ["implement"]
 title = "Code Review: {{feature}}"
 
 # Developer addresses review feedback and runs tests
 [[steps]]
-description = "Developer agent addresses any issues from code review, then writes and runs tests. Unit tests for new code, integration tests if needed. Run the full test suite, fix any regressions. All tests must pass before proceeding."
+description = "Developer agent runs the full test suite for {{feature}}. Unit tests for new code, integration tests if needed. Run the full test suite, fix any regressions. All tests must pass before proceeding."
 id = "test"
 needs = ["review"]
 title = "Developer: Test {{feature}}"

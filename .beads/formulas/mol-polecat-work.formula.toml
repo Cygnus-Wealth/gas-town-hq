@@ -40,7 +40,7 @@ beads created from it. Use `bd ready` to find them - do NOT read this file direc
 | Context filling | Use gt handoff to cycle to fresh session |
 | Unsure what to do | Mail Witness, don't guess |"""
 formula = "mol-polecat-work"
-version = 4
+version = 5
 
 [[steps]]
 id = "load-context"
@@ -381,9 +381,48 @@ git diff origin/main...HEAD # Your changes (expected)
 **Exit criteria:** Branch pushed, workspace clean, no cruft."""
 
 [[steps]]
-id = "prepare-for-review"
-title = "Prepare work for review"
+id = "code-review"
+title = "Code review gate"
 needs = ["cleanup-workspace"]
+gate = { type = "human" }
+description = """
+**Code review gate — blocks submission until a reviewer approves.**
+
+Your branch is pushed and tests pass. Now a reviewer must inspect your work.
+
+**As the implementing polecat, you:**
+1. Mail the Witness to request a code review:
+```bash
+gt mail send <rig>/witness -s "REVIEW_REQUESTED: {{issue}}" -m "Branch: $(git branch --show-current)
+Issue: {{issue}}
+Summary: <what you implemented>
+Ready for code review."
+```
+2. Wait for the reviewer to inspect your changes
+3. If the reviewer requests changes:
+   - Read their feedback in the notes on this step
+   - Address each issue — fix the code, add tests, etc.
+   - Commit and push your fixes
+   - Signal readiness: `bd update {this} --append-notes "ADDRESSED: <what you fixed>"`
+   - The reviewer will re-review. This loop continues until they approve.
+4. You CANNOT close this step yourself. Only the reviewer can.
+
+**As the reviewer (Witness or review polecat):**
+1. Review the diff: `git diff origin/main...HEAD`
+2. If issues found:
+   - `bd update {this} --append-notes "CHANGES_REQUESTED: <specific issues>"`
+   - Mail the polecat with actionable feedback
+   - Wait for fixes, then re-review
+3. When satisfied:
+   - `bd gate resolve <gate-id>`
+   - `bd close {this} --reason approved`
+
+**No code moves forward without explicit reviewer approval.**"""
+
+[[steps]]
+id = "prepare-for-review"
+title = "Prepare work for merge queue"
+needs = ["code-review"]
 description = """
 Verify work is complete and ready for merge queue.
 

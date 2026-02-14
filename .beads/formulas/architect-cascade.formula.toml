@@ -1,7 +1,7 @@
-description = "DDD architect hierarchy cascade. Work flows down through Enterprise → Domain → System → Unit architects, with each layer reviewing and signing off on the layer below before proceeding."
+description = "DDD architect hierarchy cascade with review loops. Work flows down through Enterprise → Domain → System → Unit architects. Each layer reviews the layer below with the ability to reject and iterate. Work only proceeds when the reviewer explicitly approves."
 formula = "architect-cascade"
 type = "expansion"
-version = 1
+version = 2
 
 [[template]]
 description = "Enterprise Architect defines strategic direction: domain decomposition, bounded context boundaries, cross-domain communication patterns, and enterprise-wide standards for {{feature}}. Focus on business alignment and architectural integrity."
@@ -15,7 +15,27 @@ needs = ["{target}.enterprise"]
 title = "Domain Architecture: {{feature}}"
 
 [[template]]
-description = "Enterprise Architect reviews Domain Architect's work. Verify: Does it respect bounded context boundaries? Are cross-domain contracts sound? Does it maintain enterprise principles (client-side sovereignty, read-only, privacy-first)? Sign off or send back with guidance."
+description = """Enterprise Architect reviews Domain Architect's work for {{feature}}.
+
+**This is a review loop, not a rubber stamp.**
+
+1. Read the Domain Architect's output thoroughly
+2. Evaluate against enterprise principles:
+   - Does it respect bounded context boundaries?
+   - Are cross-domain contracts sound?
+   - Does it maintain client-side sovereignty, read-only operations, privacy-first?
+   - Is the ubiquitous language consistent?
+3. If issues found:
+   - `bd update {this} --append-notes "CHANGES_REQUESTED: <specific issues>"`
+   - Mail the Domain Architect with detailed feedback
+   - Wait for them to rework and signal readiness
+   - Re-review. Repeat until satisfied.
+4. When fully satisfied:
+   - `bd update {this} --append-notes "APPROVED: <rationale>"`
+   - `bd close {this} --reason approved`
+
+**Do NOT approve work you have concerns about.** Disagreement is expected and healthy. The goal is the best architecture, not speed."""
+gate = { type = "human" }
 id = "{target}.enterprise-reviews-domain"
 needs = ["{target}.domain"]
 title = "Enterprise Review: Domain Architecture"
@@ -27,19 +47,59 @@ needs = ["{target}.enterprise-reviews-domain"]
 title = "System Architecture: {{feature}}"
 
 [[template]]
-description = "Domain Architect reviews System Architect's work. Verify: Does the system design honor domain boundaries? Are aggregate roots and repositories correct? Do the chosen libraries and patterns serve domain goals? Sign off or send back with guidance."
+description = """Domain Architect reviews System Architect's work for {{feature}}.
+
+**This is a review loop, not a rubber stamp.**
+
+1. Read the System Architect's output thoroughly
+2. Evaluate against domain contracts:
+   - Does the system design honor domain boundaries?
+   - Are aggregate roots and repositories correct?
+   - Do the chosen libraries and patterns serve domain goals?
+   - Are inter-system contracts respected?
+3. If issues found:
+   - `bd update {this} --append-notes "CHANGES_REQUESTED: <specific issues>"`
+   - Mail the System Architect with detailed feedback
+   - Wait for them to rework and signal readiness
+   - Re-review. Repeat until satisfied.
+4. When fully satisfied:
+   - `bd update {this} --append-notes "APPROVED: <rationale>"`
+   - `bd close {this} --reason approved`
+
+**Do NOT approve work you have concerns about.** Disagreement is expected and healthy. The goal is the best architecture, not speed."""
+gate = { type = "human" }
 id = "{target}.domain-reviews-system"
 needs = ["{target}.system"]
 title = "Domain Review: System Architecture"
+
+[[template]]
+description = """System Architect reviews Unit Architect's work for {{feature}}.
+
+**This is a review loop, not a rubber stamp.**
+
+1. Read the Unit Architect's output thoroughly
+2. Evaluate against system design:
+   - Does the code structure fit the module design?
+   - Are interfaces clean and testable?
+   - Do unit test specs cover critical paths?
+   - Is the implementation plan realistic?
+3. If issues found:
+   - `bd update {this} --append-notes "CHANGES_REQUESTED: <specific issues>"`
+   - Mail the Unit Architect with detailed feedback
+   - Wait for them to rework and signal readiness
+   - Re-review. Repeat until satisfied.
+4. When fully satisfied:
+   - `bd update {this} --append-notes "APPROVED: <rationale>"`
+   - `bd close {this} --reason approved`
+
+**Do NOT approve work you have concerns about.** Disagreement is expected and healthy. The goal is the best architecture, not speed."""
+gate = { type = "human" }
+id = "{target}.system-reviews-unit"
+needs = ["{target}.unit"]
+title = "System Review: Unit Architecture"
 
 [[template]]
 description = "Unit Architect designs granular code-level architecture: file structure, class/method design, interface definitions, unit test specifications, and implementation details for {{feature}}. Must align with system architect's module structure."
 id = "{target}.unit"
 needs = ["{target}.domain-reviews-system"]
 title = "Unit Architecture: {{feature}}"
-
-[[template]]
-description = "System Architect reviews Unit Architect's work. Verify: Does the code structure fit the module design? Are interfaces clean and testable? Do unit test specs cover critical paths? Is the implementation plan realistic? Sign off or send back with guidance."
-id = "{target}.system-reviews-unit"
-needs = ["{target}.unit"]
-title = "System Review: Unit Architecture"
