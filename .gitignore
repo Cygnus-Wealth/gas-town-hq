@@ -7,8 +7,12 @@
 # =============================================================================
 **/state.json
 **/*.lock
+**/*.startlock
 **/registry.json
 daemon/activity.json
+deacon/heartbeat.json
+.events.jsonl
+logs/
 
 # =============================================================================
 # Rig git worktrees (recreate with 'gt sling' or 'gt rig add')
