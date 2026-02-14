@@ -26,6 +26,13 @@ Using plan mode WILL stall your session indefinitely. Instead:
 
 **NEVER mark work as done until the build passes and ALL tests pass.** Run `npm run build` and `npm test` (or the equivalent for this rig) before closing any step. If tests fail, fix them. If you can't fix them, report the failures — do not silently proceed.
 
+**Write tests FIRST. Test plan must exist and be approved before implementation begins.** This is a TDD shop. Follow red-green-refactor:
+- Unit tests must cover all business logic, edge cases, and error paths
+- E2E tests must cover user-facing functionality
+- Tests must FAIL before implementation (red) and PASS after (green)
+- Commit test files BEFORE production code — the git log must show test-first ordering
+- Do NOT weaken test assertions to make them pass — fix the production code instead
+
 ## Startup Protocol
 
 1. Check your hook: `gt mol status`

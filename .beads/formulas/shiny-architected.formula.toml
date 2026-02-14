@@ -1,14 +1,112 @@
-description = "Full architect-driven engineering workflow. Design flows through the DDD architect hierarchy (Enterprise → Domain → System → Unit) with review loops at each level. Implementation by a Developer agent, code review with a mandatory approval gate, then test and submit. No work proceeds without reviewer agreement."
+description = "Full TDD architect-driven engineering workflow. Design flows through the DDD architect hierarchy, then test plans are created and reviewed before any production code is written. Red-green-refactor: tests first, then implementation. Code review with a mandatory approval gate, then full test run and submit. No work proceeds without reviewer agreement."
 extends = ["shiny"]
 formula = "shiny-architected"
 type = "workflow"
-version = 2
+version = 3
 
-# Override implement step with developer agent role
+# TDD Plan: enumerate tests from the architect's spec
 [[steps]]
-description = "Developer agent implements {{feature}} from the unit architect's spec. Translate the design into production code. Follow the file structure, class designs, and interface definitions exactly as specified. Write clean, tested code — no gold-plating, no deviating from the architecture."
-id = "implement"
+description = """Developer agent creates a TDD plan for {{feature}} from the unit architect's spec.
+
+**Enumerate every test that will be written:**
+
+1. **Unit tests** — one entry per business rule, edge case, and error path. Each test maps to a specific requirement from the architect's spec.
+2. **Integration tests** — verify interactions between modules, services, or layers as defined by the system architect.
+3. **E2E test scenarios** — describe user-facing flows that exercise {{feature}} end-to-end.
+
+**Format each test entry as:**
+- Test name (descriptive, reads like a requirement)
+- What it verifies (expected behavior)
+- Which requirement it traces back to
+
+**Output:** A structured test plan added to the issue notes via:
+```bash
+bd update {{issue}} --append-notes "TDD_PLAN: <structured test plan>"
+```
+
+Do NOT write any production code. Do NOT write test files yet. This is planning only."""
+id = "tdd-plan"
 needs = ["design"]
+title = "TDD Plan: {{feature}}"
+
+# TDD Plan Review: human gate before any code is written
+[[steps]]
+description = """**Test plan review gate — blocks all coding until a reviewer approves the test plan.**
+
+Reviewer verifies the TDD plan for {{feature}} covers:
+- All business logic from the architect's spec
+- Edge cases and error paths
+- Integration points between modules
+- E2E flows for user-facing functionality
+- No gaps — every requirement has at least one test
+
+**As the reviewer:**
+1. Read the TDD_PLAN notes on the issue
+2. Cross-reference against the architect's spec
+3. If gaps found:
+   - `bd update {this} --append-notes "PLAN_CHANGES_REQUESTED: <missing coverage areas>"`
+   - Developer revises the plan
+4. When satisfied:
+   - `bd gate resolve <gate-id>`
+   - `bd close {this} --reason approved`
+
+**No test code is written until this plan is approved.**"""
+gate = { type = "human" }
+id = "tdd-plan-review"
+needs = ["tdd-plan"]
+title = "TDD Plan Review: {{feature}}"
+
+# Write Tests: the "red" phase — tests compile but fail
+[[steps]]
+description = """Developer agent writes all test files for {{feature}} based on the approved TDD plan.
+
+**This is the RED phase of red-green-refactor.**
+
+1. Create test files following the project's test structure
+2. Write every test enumerated in the approved TDD plan
+3. Tests must compile/parse without errors
+4. Tests MUST FAIL — there is no production code yet
+5. Verify the red state:
+```bash
+npm test -- --run
+# Expected: tests fail (no implementation yet)
+```
+
+**Rules:**
+- Write ONLY test files. No production code.
+- Each test should clearly assert the expected behavior
+- Use descriptive test names that read like requirements
+- Mock external dependencies as needed
+- Commit test files:
+```bash
+git add <test-files>
+git commit -m "test: add failing tests for {{feature}} (red phase)"
+```
+
+**Exit criteria:** All planned tests exist, compile, and fail (red)."""
+id = "write-tests"
+needs = ["tdd-plan-review"]
+title = "Write Tests (Red): {{feature}}"
+
+# Implement: the "green" phase — make tests pass
+[[steps]]
+description = """Developer agent implements {{feature}} from the unit architect's spec to make all tests pass.
+
+**This is the GREEN phase of red-green-refactor.**
+
+1. Write production code following the architect's spec exactly
+2. Follow the file structure, class designs, and interface definitions as specified
+3. After each logical unit of code, run tests to check progress:
+```bash
+npm test -- --run
+```
+4. Continue until ALL tests pass
+5. Do not modify test assertions to make them pass — fix the production code instead
+6. No gold-plating, no deviating from the architecture
+
+**Exit criteria:** All tests pass (green). Implementation matches the architect's spec."""
+id = "implement"
+needs = ["write-tests"]
 title = "Developer: Implement {{feature}}"
 
 # Code review with mandatory approval gate
@@ -22,12 +120,16 @@ description = """Code Reviewer agent reviews the implementation of {{feature}}.
    - Does it honor system architect's module boundaries?
    - Are domain contracts respected?
 2. Check for: bugs, security issues, missing error handling, test gaps
-3. If issues found:
+3. Verify TDD discipline:
+   - Test files were committed BEFORE production code
+   - Tests cover all planned scenarios from the TDD plan
+   - No test assertions were weakened to pass
+4. If issues found:
    - `bd update {this} --append-notes "CHANGES_REQUESTED: <specific issues with file:line references>"`
    - Mail the Developer with actionable feedback
    - Wait for the Developer to address issues and signal readiness
    - Re-review the changes. Repeat until satisfied.
-4. When fully satisfied:
+5. When fully satisfied:
    - `bd update {this} --append-notes "APPROVED: <confirmation that all issues resolved>"`
    - `bd close {this} --reason approved`
 
@@ -39,7 +141,7 @@ title = "Code Review: {{feature}}"
 
 # Developer addresses review feedback and runs tests
 [[steps]]
-description = "Developer agent runs the full test suite for {{feature}}. Unit tests for new code, integration tests if needed. Run the full test suite, fix any regressions. All tests must pass before proceeding."
+description = "Developer agent runs the full test suite for {{feature}}. Unit tests, integration tests, and e2e tests. Run the full suite, fix any regressions. All tests must pass before proceeding."
 id = "test"
 needs = ["review"]
 title = "Developer: Test {{feature}}"

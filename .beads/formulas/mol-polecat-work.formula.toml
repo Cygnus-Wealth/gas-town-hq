@@ -211,25 +211,43 @@ Fresh session continues from implement.
 
 [[steps]]
 id = "implement"
-title = "Implement the solution"
+title = "Implement the solution (TDD: red-green-refactor)"
 needs = ["preflight-tests"]
 description = """
-Do the actual implementation work.
+Do the actual implementation work using **test-driven development**.
 
-**Working principles:**
-- Follow existing codebase conventions
-- Make atomic, focused commits
-- Keep changes scoped to the assigned issue
-- Don't gold-plate or scope-creep
+**TDD is mandatory. Follow red-green-refactor:**
 
-**Commit frequently:**
+**Phase 1 — RED (write failing tests first):**
+1. Check for an existing test plan in the issue notes (`bd show {{issue}}`)
+2. If a TDD plan exists, follow it. If not, create one:
+   - Enumerate unit tests for each business rule and edge case
+   - Identify integration tests for module interactions
+   - Identify e2e test scenarios for user-facing functionality
+3. Write all test files FIRST. Tests must compile but FAIL:
 ```bash
-# After each logical unit of work:
-git add <files>
-git commit -m "<type>: <description> ({{issue}})"
+git add <test-files>
+git commit -m "test: add failing tests for {{issue}} (red phase)"
+npm test -- --run
+# Expected: tests FAIL (no production code yet)
 ```
 
-Commit types: feat, fix, refactor, test, docs, chore
+**Phase 2 — GREEN (write production code to pass tests):**
+4. Write production code to make each test pass
+5. Follow existing codebase conventions
+6. Make atomic, focused commits
+7. Keep changes scoped to the assigned issue
+8. Do NOT modify test assertions to make them pass
+```bash
+git add <files>
+git commit -m "feat: implement <description> ({{issue}})"
+npm test -- --run
+# Expected: all tests PASS
+```
+
+**Phase 3 — REFACTOR (clean up while green):**
+9. Refactor production code if needed (tests must stay green)
+10. No gold-plating or scope-creep
 
 **Discovered work:**
 If you find bugs or improvements outside your scope:
@@ -249,7 +267,7 @@ Problem: <what's blocking you>
 Tried: <what you've attempted>"
 ```
 
-**Exit criteria:** Implementation complete, all changes committed."""
+**Exit criteria:** Tests written first (committed before production code), all tests pass, implementation complete."""
 
 [[steps]]
 id = "self-review"
@@ -289,15 +307,15 @@ If you accidentally modified unrelated files, remove those changes.
 
 [[steps]]
 id = "run-tests"
-title = "Run tests and verify coverage"
+title = "Run tests and verify TDD coverage"
 needs = ["self-review"]
 description = """
-Verify your changes don't break anything and are properly tested.
+Verify your changes don't break anything and TDD discipline was followed.
 
 **1. Run the full test suite:**
 ```bash
-go test ./...               # For Go projects
-# Or appropriate command for your stack
+npm run build               # Build must pass
+npm test -- --run           # All tests must pass
 ```
 
 **ALL TESTS MUST PASS.** Do not proceed with failures.
@@ -311,27 +329,35 @@ go test ./...               # For Go projects
 ```bash
 # Check if failure exists on main:
 git stash
-git checkout main
-go test ./...
+git checkout origin/main
+npm test -- --run
 git checkout -
 git stash pop
 ```
 
-**3. Verify test coverage for new code:**
-- New features should have tests
-- Bug fixes should have regression tests
-- If you added significant code without tests, add them now
+**3. Verify TDD discipline:**
+- Unit tests exist for all new business logic
+- E2E tests exist for new user-facing functionality
+- Test commits precede production code commits in git log
+- No test assertions were weakened to pass
 
-**4. Run any other quality checks:**
+**4. Verify test coverage:**
 ```bash
-# Linting (if configured)
-golangci-lint run ./...
-
-# Build check
-go build ./...
+# Check git log to confirm test-first ordering:
+git log --oneline origin/main..HEAD
+# Test commits (test:) should appear BEFORE feat/fix commits
 ```
 
-**Exit criteria:** All tests pass, new code has appropriate test coverage."""
+- New features MUST have tests (written first)
+- Bug fixes MUST have regression tests (written first)
+- If you skipped TDD, go back and add tests NOW
+
+**5. Run build check:**
+```bash
+npm run build               # Must compile cleanly
+```
+
+**Exit criteria:** Build passes, all tests pass, TDD discipline verified (tests written before production code)."""
 
 [[steps]]
 id = "cleanup-workspace"
