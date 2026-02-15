@@ -31,6 +31,11 @@ logs/
 **/crew/
 
 # =============================================================================
+# Rig source repositories (managed by .repo.git, not gt)
+# =============================================================================
+**/.repo.git/
+
+# =============================================================================
 # Runtime state directories (gitignored ephemeral data)
 # =============================================================================
 **/.runtime/
@@ -50,6 +55,33 @@ logs/
 *.swo
 .vscode/
 .idea/
+
+# =============================================================================
+# Rig source code (checked out by .repo.git into rig directories)
+# Only gt-managed files (AGENTS.md, config.json, .beads/, witness/, refinery/)
+# should be tracked. Everything else belongs to the rig's own repository.
+# =============================================================================
+CygnusWealthApp/src/
+CygnusWealthApp/e2e/
+CygnusWealthApp/public/
+CygnusWealthApp/node_modules/
+CygnusWealthApp/.github/
+CygnusWealthApp/package.json
+CygnusWealthApp/package-lock.json
+CygnusWealthApp/index.html
+CygnusWealthApp/vite.config.ts
+CygnusWealthApp/tsconfig*.json
+CygnusWealthApp/eslint.config.js
+CygnusWealthApp/playwright.config.ts
+CygnusWealthApp/playwright-report/
+CygnusWealthApp/test-results/
+CygnusWealthApp/debug-screenshot.png
+CygnusWealthApp/CLAUDE.md
+CygnusWealthApp/README.md
+CygnusWealthApp/ARCHITECTURE_REVIEW.md
+CygnusWealthApp/TEST_COVERAGE_REPORT.md
+CygnusWealthApp/TEST_FIX_SUMMARY.md
+CygnusWealthApp/TEST_RESULTS_SUMMARY.md
 
 # =============================================================================
 # Explicitly track (override above patterns)
