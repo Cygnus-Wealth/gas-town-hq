@@ -1,0 +1,15 @@
+{
+  "type": "town-settings",
+  "version": 1,
+  "default_agent": "claude",
+  "agents": {
+    "claude": {
+      "command": "claude",
+      "args": [
+        "--dangerously-skip-permissions",
+        "--model",
+        "claude-opus-4-6"
+      ]
+    }
+  }
+}

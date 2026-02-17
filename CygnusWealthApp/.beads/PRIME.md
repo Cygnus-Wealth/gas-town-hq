@@ -24,7 +24,13 @@ Using plan mode WILL stall your session indefinitely. Instead:
 - If the task is complex, break it into steps yourself — do not ask for approval
 - Write code immediately. Do not propose changes first.
 
-**NEVER mark work as done until the build passes and ALL tests pass.** Run `npm run build` and `npm test` (or the equivalent for this rig) before closing any step. If tests fail, fix them. If you can't fix them, report the failures — do not silently proceed.
+**Verification: build + unit tests locally, E2E via CI.**
+- Run `npm run build` and `npm test -- --run` locally. These MUST pass before committing.
+- Do NOT run E2E tests (`npm run test:e2e`) locally — they consume too much context and will kill your session.
+- E2E tests run automatically in CI when you push to your branch / create a PR.
+- After pushing, check CI status with `gh run list --branch <your-branch> --limit 1` and wait for it to pass.
+- If CI fails, read the logs with `gh run view <run-id> --log-failed`, fix the issue, and push again.
+- NEVER mark work as done if build or unit tests fail locally, or if CI E2E tests fail.
 
 **Write tests FIRST. Test plan must exist and be approved before implementation begins.** This is a TDD shop. Follow red-green-refactor:
 - Unit tests must cover all business logic, edge cases, and error paths
@@ -32,6 +38,14 @@ Using plan mode WILL stall your session indefinitely. Instead:
 - Tests must FAIL before implementation (red) and PASS after (green)
 - Commit test files BEFORE production code — the git log must show test-first ordering
 - Do NOT weaken test assertions to make them pass — fix the production code instead
+
+## Context Budget Hygiene
+
+Your session has a 200K token context window. Long command outputs (npm install, builds, test results) consume it fast. Protect your budget:
+- Pipe verbose commands to files: `npm install > /tmp/install.log 2>&1 && echo "Install done, exit $?"`
+- For test results, use: `npm test -- --run 2>&1 | tail -20` to see just the summary
+- Avoid reading entire large files when you only need a few lines — use line offsets
+- Commit and push EARLY. If your session dies after committing, the work survives.
 
 ## Startup Protocol
 
