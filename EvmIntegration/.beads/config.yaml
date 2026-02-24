@@ -1,1 +1,4 @@
+backend: sqlite
 prefix: ev
+sync:
+    mode: dolt-native

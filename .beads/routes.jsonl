@@ -9,3 +9,4 @@
 {"prefix":"ro-","path":"RobinhoodIntegration"}
 {"prefix":"so-","path":"SolIntegration"}
 {"prefix":"wa-","path":"WalletIntegrationSystem"}
+{"prefix":"ri-","path":"RpcInfrastructure"}

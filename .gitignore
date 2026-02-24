@@ -9,10 +9,37 @@
 **/*.lock
 **/*.startlock
 **/registry.json
-daemon/activity.json
 deacon/heartbeat.json
 .events.jsonl
 logs/
+
+# =============================================================================
+# Daemon runtime (logs, PIDs, state — all regenerated on startup)
+# =============================================================================
+daemon/
+
+# =============================================================================
+# Dolt data directory (runtime database storage, not source controlled)
+# =============================================================================
+.dolt-data/
+
+# =============================================================================
+# Dolt client beads directories (created by bd for each database)
+# =============================================================================
+beads/
+beads_*/
+
+# =============================================================================
+# Beads runtime artifacts
+# =============================================================================
+**/.beads/hooks/
+**/.beads/locks/
+**/.beads/*.bak
+**/.beads/daemon-error
+**/.beads/daemon.log*
+**/.beads/last-touched
+**/.beads/.local_version
+**/.beads/.gt-types-configured
 
 # =============================================================================
 # Rig git worktrees (recreate with 'gt sling' or 'gt rig add')
@@ -75,7 +102,7 @@ CygnusWealthApp/eslint.config.js
 CygnusWealthApp/playwright.config.ts
 CygnusWealthApp/playwright-report/
 CygnusWealthApp/test-results/
-CygnusWealthApp/debug-screenshot.png
+CygnusWealthApp/*.png
 CygnusWealthApp/CLAUDE.md
 CygnusWealthApp/README.md
 CygnusWealthApp/ARCHITECTURE_REVIEW.md

@@ -57,6 +57,14 @@
         "prefix": "ro"
       }
     },
+    "RpcInfrastructure": {
+      "git_url": "git@github.com:Cygnus-Wealth/rpc-infrastructure.git",
+      "added_at": "2026-02-20T16:29:30.86748537-07:00",
+      "beads": {
+        "repo": "",
+        "prefix": "ri"
+      }
+    },
     "SolIntegration": {
       "git_url": "git@github.com:Cygnus-Wealth/sol-integration.git",
       "added_at": "2026-02-13T13:46:48.857013253-07:00",
