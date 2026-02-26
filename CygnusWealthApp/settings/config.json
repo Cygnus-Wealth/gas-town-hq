@@ -1,0 +1,26 @@
+{
+  "type": "rig-settings",
+  "version": 1,
+  "merge_queue": {
+    "enabled": true,
+    "integration_branch_polecat_enabled": true,
+    "integration_branch_refinery_enabled": true,
+    "on_conflict": "assign_back",
+    "run_tests": true,
+    "test_command": "npx vitest --run",
+    "delete_merged_branches": true,
+    "retry_flaky_tests": 1,
+    "poll_interval": "30s",
+    "max_concurrent": 1,
+    "stale_claim_timeout": "30m"
+  },
+  "namepool": {
+    "style": "mad-max",
+    "max_before_numbering": 50
+  },
+  "workflow": {},
+  "role_agents": {
+    "refinery": "claude-sonnet",
+    "witness": "claude-haiku"
+  }
+}
